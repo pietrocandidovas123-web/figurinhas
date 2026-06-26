@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Figurinhas Copa 2026 🏆</title>
+<meta name="theme-color" content="#00205B">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600;700&display=swap');
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --verde: #00843D; --amarelo: #FFCD00; --azul: #00205B;
+    --fundo: #0a0f1e; --card: #111827; --borda: #1f2d45;
+    --texto: #e8eaf0; --muted: #6b7a99;
+  }
+  body { background: var(--fundo); color: var(--texto); font-family: 'Inter', sans-serif; min-height: 100vh; padding-bottom: 60px; }
+
+  header {
+    background: linear-gradient(135deg, var(--azul) 0%, #001a45 100%);
+    border-bottom: 3px solid var(--amarelo);
+    padding: 24px 20px 18px; text-align: center;
+  }
+  header h1 { font-family: 'Bebas Neue', sans-serif; font-size: 2rem; color: var(--amarelo); letter-spacing: 2px; }
+  header p { color: #a0b0cc; font-size: 0.82rem; margin-top: 6px; }
+
+  .container { padding: 20px 16px; }
+
+  .passo { background: var(--card); border: 1px solid var(--borda); border-radius: 12px; padding: 16px; margin-bottom: 16px; }
+  .passo-titulo { font-size: 0.7rem; font-weight: 700; color: var(--amarelo); letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 10px; display: flex; align-items: center; gap: 8px; }
+  .passo-num { background: var(--amarelo); color: var(--azul); width: 20px; height: 20px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-size: 0.7rem; font-weight: 700; flex-shrink: 0; }
+
+  label { display: block; font-size: 0.75rem; font-weight: 600; color: var(--muted); letter-spacing: 0.8px; text-transform: uppercase; margin-bottom: 6px; }
+
+  input[type=text], textarea {
+    width: 100%; background: #0d1929; border: 1px solid var(--borda);
+    border-radius: 8px; color: var(--texto); font-family: 'Inter', sans-serif;
+    font-size: 0.85rem; padding: 12px; outline: none; transition: border-color 0.2s;
+  }
+  textarea { resize: vertical; min-height: 140px; }
+  input[type=text]:focus, textarea:focus { border-color: var(--amarelo); }
+  input[type=text]::placeholder, textarea::placeholder { color: var(--muted); }
+
+  .hint { font-size: 0.72rem; color: var(--muted); margin-top: 5px; }
+
+  .btn { display: block; width: 100%; padding: 15px; border: none; border-radius: 10px; font-family: 'Bebas Neue', sans-serif; font-size: 1.15rem; letter-spacing: 2px; cursor: pointer; transition: all 0.2s; margin-top: 14px; text-align: center; }
+  .btn-primary { background: var(--amarelo); color: var(--azul); }
+  .btn-primary:hover { background: #e6b800; }
+
+  .btn-whats { background: #25D366; color: #fff; display: flex; align-items: center; justify-content: center; gap: 10px; font-size: 1rem; text-decoration: none; padding: 16px; border-radius: 10px; margin-top: 14px; border: none; cursor: pointer; font-family: 'Bebas Neue', sans-serif; letter-spacing: 2px; }
+  .btn-whats:hover { background: #1db954; }
+  .btn-whats svg { width: 22px; height: 22px; fill: white; flex-shrink: 0; }
+
+  .separador { height: 1px; background: var(--borda); margin: 14px 0; }
+
+  .resultado-box { background: var(--card); border: 1px solid var(--borda); border-radius: 10px; padding: 16px; margin-top: 16px; }
+
+  .count-num { font-family: 'Bebas Neue', sans-serif; font-size: 2rem; color: var(--amarelo); line-height: 1; }
+  .count-label { font-size: 0.75rem; color: var(--muted); margin-bottom: 12px; }
+
+  .pais-bloco { margin-bottom: 10px; }
+  .pais-titulo { font-size: 0.72rem; font-weight: 700; color: var(--muted); letter-spacing: 1px; text-transform: uppercase; margin-bottom: 4px; }
+
+  .figurinha-tag { display: inline-block; background: #0a2e1a; border: 1px solid var(--verde); border-radius: 5px; padding: 3px 9px; font-size: 0.8rem; margin: 2px; color: #4ade80; }
+  .figurinha-tag.brilhante { background: #1a1500; border-color: #a16207; color: var(--amarelo); }
+
+  .resumo-preco { background: #0d1929; border-radius: 8px; padding: 12px; margin: 12px 0; }
+  .preco-linha { display: flex; justify-content: space-between; font-size: 0.82rem; color: var(--muted); padding: 3px 0; }
+  .preco-total { display: flex; justify-content: space-between; font-size: 1.1rem; font-weight: 700; color: var(--amarelo); border-top: 1px solid var(--borda); margin-top: 6px; padding-top: 8px; }
+
+  .alerta { padding: 12px 14px; border-radius: 8px; font-size: 0.82rem; margin-top: 12px; }
+  .alerta-erro { background: #2d0a0a; color: #f87171; border: 1px solid #7f1d1d; }
+
+  .loading { text-align: center; color: var(--muted); padding: 30px; font-size: 0.85rem; }
+  .spinner { display: inline-block; width: 28px; height: 28px; border: 3px solid var(--borda); border-top-color: var(--amarelo); border-radius: 50%; animation: spin 0.8s linear infinite; margin-bottom: 10px; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>⚽ Figurinhas Copa 2026</h1>
+  <p>Veja quais figurinhas temos disponíveis pra você!</p>
+</header>
+
+<div class="container">
+  <div class="passo">
+    <div class="passo-titulo"><span class="passo-num">1</span> Seu nome</div>
+    <input type="text" id="nome-cliente" placeholder="Como você se chama?">
+  </div>
+
+  <div class="passo">
+    <div class="passo-titulo"><span class="passo-num">2</span> Cole sua lista de figurinhas</div>
+    <textarea id="lista-cliente" placeholder="Cole aqui a lista das figurinhas que você precisa...&#10;&#10;Aceita qualquer formato:&#10;• App Figuritas: BRA 🇧🇷: 4, 7, 13&#10;• Álbum 2026: CZE3, BRA3, HAI20&#10;• Ou qualquer lista com país e números"></textarea>
+    <p class="hint">Pode colar direto do WhatsApp ou do app.</p>
+  </div>
+
+  <button class="btn btn-primary" onclick="verificar()">🔍 Ver o que temos disponível</button>
+
+  <div id="resultado"></div>
+</div>
+
+<script>
+const BIN_ID = '6a3edee3da38895dfe0485b9';
+const API_KEY = '$2a$10$BrOXbFU50a6WqMfNYYRXmeJ1AE2Qe1WUHl.WpZCwPLpBINjCu.TIC';
+const BIN_URL = `https://api.jsonbin.io/v3/b/${BIN_ID}`;
+const DB_HEADERS = { 'Content-Type': 'application/json', 'X-Access-Key': API_KEY };
+
+let estoque = {};
+let pedidos = [];
+
+// Carrega estoque na abertura
+async function iniciar() {
+  try {
+    const r = await fetch(BIN_URL + '/latest', { headers: DB_HEADERS });
+    const data = await r.json();
+    estoque = data.record?.estoque || {};
+    pedidos = data.record?.pedidos || [];
+  } catch(e) {
+    console.error('Erro ao carregar estoque:', e);
+  }
+}
+iniciar();
+
+// ── Helpers ───────────────────────────────────────────────────────────
+function removeEmojis(str) {
+  return str
+    .replace(/[\u{1F1E0}-\u{1F1FF}]{2}/gu, '')
+    .replace(/[\u{1F3F4}\u{1F3C1}\u{1F3C6}\u{1F30E}\u{1F4DC}]/gu, '')
+    .replace(/\uFE0F/g, '')
+    .replace(/[\u{E0067}\u{E0062}\u{E0065}\u{E006E}\u{E0073}\u{E007F}]/gu, '')
+    .trim();
+}
+
+function parseLinhaF1(linha) {
+  const s = removeEmojis(linha);
+  const idx = s.indexOf('=');
+  if (idx === -1) return null;
+  const pais = s.slice(0, idx).trim().toUpperCase().replace(/\s+/g,'');
+  const nums = {};
+  for (let p of s.slice(idx+1).split(',')) {
+    p = p.trim();
+    const m = p.match(/^(\d+)(\(\d+x\))?$/i);
+    if (m) nums[m[1]] = 1;
+  }
+  return Object.keys(nums).length ? { pais, nums } : null;
+}
+
+function parseLinhaF2(linha) {
+  const s = removeEmojis(linha);
+  const idx = s.indexOf(':');
+  if (idx === -1) return null;
+  const pais = s.slice(0, idx).trim().toUpperCase().replace(/\s+/g,'');
+  const nums = {};
+  for (let p of s.slice(idx+1).split(',')) {
+    p = p.trim();
+    if (/^\d+$/.test(p)) nums[p] = 1;
+  }
+  return Object.keys(nums).length ? { pais, nums } : null;
+}
+
+function parseLista(texto) {
+  const resultado = {};
+  const linhasInline = texto.split('\n').filter(l => /\b[A-Z]{2,4}\d+\b/.test(l.trim()) && !/:/.test(l) && !l.includes('='));
+  if (linhasInline.length > 0) {
+    for (const m of linhasInline.join(' ').matchAll(/\b([A-Z]{2,4})(\d+)\b/g)) {
+      if (['PG','ID','V'].includes(m[1])) continue;
+      if (!resultado[m[1]]) resultado[m[1]] = {};
+      resultado[m[1]][m[2]] = 1;
+    }
+  }
+  for (const linha of texto.split('\n')) {
+    const t = linha.trim();
+    if (!t || /^https?:\/\//i.test(t) || /faltantes|baixe|copa 2026|vamos trocar|gerado|android|ios|chave/i.test(t) || !/[:=]/.test(t)) continue;
+    const p = linha.includes('=') ? parseLinhaF1(linha) : parseLinhaF2(linha);
+    if (p) {
+      if (resultado[p.pais]) Object.assign(resultado[p.pais], p.nums);
+      else resultado[p.pais] = p.nums;
+    }
+  }
+  return resultado;
+}
+
+function isBrilhante(n) { return n === '1'; }
+function formatBRL(v) { return 'R$ ' + v.toFixed(2).replace('.',','); }
+
+function disponivelPara(pais, num) {
+  const total = estoque[pais]?.[num] || 0;
+  let reservado = 0;
+  for (const p of pedidos) {
+    if (p.status === 'reservado' && p.matches?.[pais]?.includes(num)) reservado++;
+  }
+  return total - reservado > 0;
+}
+
+// ── Verificar ─────────────────────────────────────────────────────────
+async function verificar() {
+  const nome = document.getElementById('nome-cliente').value.trim();
+  const txt = document.getElementById('lista-cliente').value;
+  const div = document.getElementById('resultado');
+
+  if (!nome) { div.innerHTML = `<div class="alerta alerta-erro">⚠️ Coloca seu nome primeiro!</div>`; return; }
+  if (!txt.trim()) { div.innerHTML = `<div class="alerta alerta-erro">⚠️ Cola sua lista de figurinhas!</div>`; return; }
+
+  div.innerHTML = `<div class="loading"><div class="spinner"></div><br>Verificando estoque...</div>`;
+
+  // Recarrega estoque atualizado
+  try {
+    const r = await fetch(BIN_URL + '/latest', { headers: DB_HEADERS });
+    const data = await r.json();
+    estoque = data.record?.estoque || {};
+    pedidos = data.record?.pedidos || [];
+  } catch(e) {}
+
+  if (Object.keys(estoque).length === 0) {
+    div.innerHTML = `<div class="alerta alerta-erro">⚠️ Estoque indisponível no momento. Tenta mais tarde!</div>`;
+    return;
+  }
+
+  const pedidas = parseLista(txt);
+  if (Object.keys(pedidas).length === 0) {
+    div.innerHTML = `<div class="alerta alerta-erro">⚠️ Não consegui ler sua lista. Tenta copiar direto do app.</div>`;
+    return;
+  }
+
+  const matches = {}, faltam = {};
+  for (const [pais, nums] of Object.entries(pedidas)) {
+    for (const num of Object.keys(nums)) {
+      if (disponivelPara(pais, num)) {
+        if (!matches[pais]) matches[pais] = [];
+        matches[pais].push(num);
+      } else {
+        if (!faltam[pais]) faltam[pais] = [];
+        faltam[pais].push(num);
+      }
+    }
+  }
+
+  const totalMatch = Object.values(matches).reduce((s,a)=>s+a.length,0);
+  const totalPediu = Object.values(pedidas).reduce((s,a)=>s+Object.keys(a).length,0);
+
+  if (totalMatch === 0) {
+    div.innerHTML = `<div class="alerta alerta-erro">😕 Poxa, nenhuma das ${totalPediu} figurinhas que você precisa está disponível agora. Tenta mais tarde!</div>`;
+    return;
+  }
+
+  let normais = 0, brilhantes = 0;
+  for (const nums of Object.values(matches))
+    for (const n of nums)
+      isBrilhante(n) ? brilhantes++ : normais++;
+  const total = normais * 1.50 + brilhantes * 3.00;
+
+  const linhasMsg = Object.entries(matches).sort().map(([pais, nums]) =>
+    `${pais}: ${nums.sort((a,b)=>parseInt(a)-parseInt(b)).join(', ')}`
+  );
+  const msgWhats = encodeURIComponent(
+    `Olá! Sou ${nome} e tenho interesse nas seguintes figurinhas:\n\n` +
+    linhasMsg.join('\n') +
+    `\n\n💰 Total: ${formatBRL(total)}` +
+    (normais > 0 ? `\n• ${normais} normal${normais!==1?'is':''} × R$ 1,50` : '') +
+    (brilhantes > 0 ? `\n• ${brilhantes} brilhante${brilhantes!==1?'s':''} ✨ × R$ 3,00` : '') +
+    `\n\nPodemos fechar? 😊`
+  );
+
+  div.innerHTML = `
+    <div class="resultado-box">
+      <div class="count-num">${totalMatch}</div>
+      <div class="count-label">figurinhas disponíveis das ${totalPediu} que você precisa</div>
+
+      ${Object.entries(matches).sort().map(([pais, nums]) => `
+        <div class="pais-bloco">
+          <div class="pais-titulo">${pais}</div>
+          ${nums.sort((a,b)=>parseInt(a)-parseInt(b)).map(n =>
+            `<span class="figurinha-tag ${isBrilhante(n)?'brilhante':''}">${pais}-${n}${isBrilhante(n)?' ✨':''}</span>`
+          ).join('')}
+        </div>
+      `).join('')}
+
+      <div class="separador"></div>
+      <div class="resumo-preco">
+        ${normais > 0 ? `<div class="preco-linha"><span>${normais}x normal${normais!==1?'is':''}</span><span>${formatBRL(normais*1.50)}</span></div>` : ''}
+        ${brilhantes > 0 ? `<div class="preco-linha"><span>${brilhantes}x brilhante${brilhantes!==1?'s':''} ✨</span><span>${formatBRL(brilhantes*3.00)}</span></div>` : ''}
+        <div class="preco-total"><span>Total</span><span>${formatBRL(total)}</span></div>
+      </div>
+
+      ${Object.keys(faltam).length > 0 ? `
+        <div class="separador"></div>
+        <details>
+          <summary style="font-size:0.78rem;color:var(--muted);cursor:pointer;">Ver ${Object.values(faltam).reduce((s,a)=>s+a.length,0)} que não temos</summary>
+          <div style="margin-top:8px;">
+            ${Object.entries(faltam).sort().map(([pais, nums]) => `
+              <div class="pais-bloco">
+                <div class="pais-titulo" style="color:#4b5a72">${pais}</div>
+                ${nums.map(n=>`<span class="figurinha-tag" style="background:#0d1929;border-color:var(--borda);color:var(--muted);">${pais}-${n}</span>`).join('')}
+              </div>
+            `).join('')}
+          </div>
+        </details>
+      ` : ''}
+
+      <a class="btn-whats" href="https://wa.me/5534984453542?text=${encodeURIComponent(
+        `Olá! Sou ${nome} e tenho interesse nas seguintes figurinhas:\n\n` +
+        linhasMsg.join('\n') +
+        `\n\n💰 Total: ${formatBRL(total)}` +
+        (normais > 0 ? `\n• ${normais} normal${normais!==1?'is':''} × R$ 1,50` : '') +
+        (brilhantes > 0 ? `\n• ${brilhantes} brilhante${brilhantes!==1?'s':''} ✨ × R$ 3,00` : '') +
+        `\n\nPodemos fechar? 😊`
+      )}" target="_blank">
+        <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+        COMPRAR PELO WHATSAPP
+      </a>
+    </div>
+  `;
+}
+</script>
+</body>
+</html>

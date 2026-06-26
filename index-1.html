@@ -1,0 +1,772 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Figurinhas Copa 2026</title>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#00205B">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Figurinhas">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600&display=swap');
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --verde: #00843D;
+    --amarelo: #FFCD00;
+    --azul: #00205B;
+    --fundo: #0a0f1e;
+    --card: #111827;
+    --borda: #1f2d45;
+    --texto: #e8eaf0;
+    --muted: #6b7a99;
+  }
+
+  body {
+    background: var(--fundo);
+    color: var(--texto);
+    font-family: 'Inter', sans-serif;
+    min-height: 100vh;
+    padding: 0 0 60px;
+  }
+
+  header {
+    background: linear-gradient(135deg, var(--azul) 0%, #001a45 100%);
+    border-bottom: 3px solid var(--amarelo);
+    padding: 20px 24px 16px;
+    text-align: center;
+  }
+  header h1 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 2rem;
+    letter-spacing: 2px;
+    color: var(--amarelo);
+    line-height: 1;
+  }
+  header p { color: #a0b0cc; font-size: 0.78rem; margin-top: 4px; }
+  .badge-estoque {
+    display: inline-block;
+    background: var(--verde);
+    color: #fff;
+    font-size: 0.7rem;
+    font-weight: 600;
+    padding: 2px 10px;
+    border-radius: 20px;
+    margin-top: 8px;
+    letter-spacing: 1px;
+  }
+
+  nav { display: flex; background: var(--card); border-bottom: 1px solid var(--borda); }
+  nav button {
+    flex: 1; padding: 14px 8px; background: none; border: none;
+    color: var(--muted); font-family: 'Inter', sans-serif;
+    font-size: 0.8rem; font-weight: 600; cursor: pointer;
+    border-bottom: 3px solid transparent; transition: all 0.2s; letter-spacing: 0.5px;
+  }
+  nav button.ativa { color: var(--amarelo); border-bottom-color: var(--amarelo); }
+
+  .aba { display: none; padding: 20px 16px; }
+  .aba.ativa { display: block; }
+
+  label {
+    display: block; font-size: 0.75rem; font-weight: 600;
+    color: var(--muted); letter-spacing: 0.8px; text-transform: uppercase; margin-bottom: 6px;
+  }
+
+  textarea {
+    width: 100%; background: var(--card); border: 1px solid var(--borda);
+    border-radius: 8px; color: var(--texto); font-family: 'Inter', sans-serif;
+    font-size: 0.85rem; padding: 12px; resize: vertical; min-height: 160px;
+    outline: none; transition: border-color 0.2s;
+  }
+  textarea:focus { border-color: var(--amarelo); }
+  textarea::placeholder { color: var(--muted); }
+
+  input[type=text] {
+    width: 100%; background: var(--card); border: 1px solid var(--borda);
+    border-radius: 8px; color: var(--texto); font-family: 'Inter', sans-serif;
+    font-size: 0.85rem; padding: 12px; outline: none; margin-top: 12px;
+    transition: border-color 0.2s;
+  }
+  input[type=text]:focus { border-color: var(--amarelo); }
+  input[type=text]::placeholder { color: var(--muted); }
+
+  .hint { font-size: 0.72rem; color: var(--muted); margin-top: 5px; }
+
+  .btn {
+    display: block; width: 100%; padding: 14px; border: none;
+    border-radius: 8px; font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.1rem; letter-spacing: 2px; cursor: pointer;
+    transition: all 0.2s; margin-top: 14px;
+  }
+  .btn-primary { background: var(--amarelo); color: var(--azul); }
+  .btn-primary:hover { background: #e6b800; }
+  .btn-verde { background: var(--verde); color: #fff; }
+  .btn-verde:hover { background: #006d32; }
+  .btn-perigo {
+    background: transparent; color: #ef4444; border: 1px solid #ef4444;
+    font-size: 0.85rem; font-family: 'Inter', sans-serif;
+    letter-spacing: 0; padding: 10px; margin-top: 8px;
+  }
+
+  .separador { height: 1px; background: var(--borda); margin: 18px 0; }
+
+  .resultado-box {
+    background: var(--card); border: 1px solid var(--borda);
+    border-radius: 8px; padding: 14px; margin-top: 16px;
+  }
+  .resultado-box h3 {
+    font-size: 0.75rem; font-weight: 600; color: var(--muted);
+    letter-spacing: 0.8px; text-transform: uppercase; margin-bottom: 10px;
+  }
+
+  .pais-bloco { margin-bottom: 14px; }
+  .pais-titulo {
+    font-size: 0.75rem; font-weight: 600; color: var(--muted);
+    letter-spacing: 1px; text-transform: uppercase; margin-bottom: 5px;
+  }
+
+  .figurinha-tag {
+    display: inline-block; background: #1a2540; border: 1px solid var(--borda);
+    border-radius: 5px; padding: 3px 9px; font-size: 0.8rem; margin: 2px;
+    color: var(--texto);
+  }
+  .figurinha-tag.match { background: #0a2e1a; border-color: var(--verde); color: #4ade80; }
+  .figurinha-tag.repetida { background: #1a1a00; border-color: #a16207; color: var(--amarelo); }
+
+  .count-bar {
+    display: flex; justify-content: space-between;
+    align-items: center; margin-bottom: 10px;
+  }
+  .count-num { font-family: 'Bebas Neue', sans-serif; font-size: 1.6rem; color: var(--amarelo); line-height: 1; }
+  .count-label { font-size: 0.72rem; color: var(--muted); }
+
+  .pedido-card {
+    background: var(--card); border: 1px solid var(--borda);
+    border-radius: 10px; padding: 14px; margin-bottom: 12px;
+  }
+  .pedido-header {
+    display: flex; justify-content: space-between;
+    align-items: center; margin-bottom: 8px;
+  }
+  .pedido-num { font-family: 'Bebas Neue', sans-serif; font-size: 1.1rem; color: var(--amarelo); letter-spacing: 1px; }
+  .status-badge { font-size: 0.68rem; font-weight: 600; padding: 3px 9px; border-radius: 20px; letter-spacing: 0.5px; }
+  .status-pendente { background: #2d1f00; color: #fbbf24; }
+  .status-aguardando { background: #2d1f00; color: #fbbf24; }
+  .status-reservado { background: #0a1a3a; color: #60a5fa; }
+  .status-concluido { background: #0a2e1a; color: #4ade80; }
+  .status-entregue { background: #0a2e1a; color: #4ade80; }
+  .status-cancelado { background: #1f0a0a; color: #f87171; }
+
+  .pedido-actions { display: flex; gap: 8px; margin-top: 10px; }
+  .pedido-actions button {
+    flex: 1; padding: 8px; border-radius: 6px; border: none;
+    font-size: 0.78rem; font-weight: 600; cursor: pointer;
+  }
+  .btn-confirmar { background: var(--verde); color: #fff; }
+  .btn-cancelar { background: #1f1f1f; color: #ef4444; border: 1px solid #ef4444 !important; }
+
+  .vazio { text-align: center; color: var(--muted); padding: 40px 20px; font-size: 0.85rem; }
+  .vazio span { font-size: 2rem; display: block; margin-bottom: 8px; }
+
+  .alerta { padding: 10px 14px; border-radius: 8px; font-size: 0.82rem; margin-top: 12px; }
+  .alerta-ok { background: #0a2e1a; color: #4ade80; border: 1px solid #166534; }
+  .alerta-erro { background: #2d0a0a; color: #f87171; border: 1px solid #7f1d1d; }
+
+  .copiar-btn {
+    display: inline-block; padding: 8px 14px; border-radius: 6px;
+    border: 1px solid var(--borda); background: #1a2540; color: var(--texto);
+    font-size: 0.8rem; font-weight: 600; cursor: pointer; text-align: center;
+  }
+  .copiar-btn:hover { border-color: var(--amarelo); color: var(--amarelo); }
+
+  .estoque-pais {
+    background: var(--card); border: 1px solid var(--borda);
+    border-radius: 8px; padding: 10px 12px; margin-bottom: 8px;
+  }
+  .estoque-pais-header {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: 6px;
+  }
+  .estoque-pais-nome { font-weight: 600; font-size: 0.85rem; }
+  .estoque-pais-count { font-size: 0.72rem; color: var(--muted); }
+
+  .figurinha-tag.brilhante { background: #1a1500; border-color: #a16207; color: var(--amarelo); }
+
+  .resumo-preco {
+    background: #0d1929; border-radius: 8px; padding: 10px 12px;
+  }
+  .preco-linha {
+    display: flex; justify-content: space-between;
+    font-size: 0.82rem; color: var(--muted); padding: 3px 0;
+  }
+  .preco-total {
+    display: flex; justify-content: space-between;
+    font-size: 1rem; font-weight: 700; color: var(--amarelo);
+    border-top: 1px solid var(--borda); margin-top: 6px; padding-top: 6px;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>⚽ Figurinhas Copa 2026</h1>
+  <p>Controle de estoque para vendedores</p>
+  <span class="badge-estoque" id="badge-total">Estoque: 0 figurinhas</span>
+</header>
+<div id="sync-status" style="display:none;text-align:center;font-size:0.72rem;padding:5px;background:#1f2d45;color:#a0b0cc;"></div>
+
+<nav>
+  <button class="ativa" onclick="irAba('estoque')">📦 Estoque</button>
+  <button onclick="irAba('filtrar')">🔍 Filtrar</button>
+  <button onclick="irAba('pedidos')">📋 Pedidos</button>
+</nav>
+
+<!-- ABA ESTOQUE -->
+<div id="aba-estoque" class="aba ativa">
+  <label>Cole sua lista de figurinhas</label>
+  <textarea id="input-estoque" placeholder="🇧🇷 Bra = 1,2,3(2x),5&#10;🇦🇷 Arg = 4,7(3x),10&#10;..."></textarea>
+  <p class="hint">Formato: País = números, com (2x)(3x) para repetidas. Pode colar direto do WhatsApp.</p>
+  <button class="btn btn-primary" onclick="processarEstoque()">✅ Salvar estoque</button>
+
+  <div id="estoque-preview"></div>
+
+  <button class="btn btn-perigo" onclick="limparEstoque()" style="margin-top:16px;">🗑 Limpar estoque</button>
+</div>
+
+<!-- ABA FILTRAR -->
+<div id="aba-filtrar" class="aba">
+  <label>Lista do cliente (o que ele precisa)</label>
+  <textarea id="input-cliente" placeholder="Cole a lista do cliente aqui...&#10;&#10;Aceita 3 formatos:&#10;&#10;1️⃣ App Figuritas:&#10;BRA 🇧🇷: 4, 7, 13&#10;&#10;2️⃣ Álbum de Figurinhas 2026:&#10;CZE3, CZE16, BRA3&#10;&#10;3️⃣ Mesmo formato do seu estoque"></textarea>
+  <input type="text" id="nome-cliente" placeholder="Nome do cliente (opcional)">
+  <button class="btn btn-primary" onclick="filtrar()">🔍 Ver o que tenho pra esse cliente</button>
+  <div id="resultado-filtro"></div>
+</div>
+
+<!-- ABA PEDIDOS -->
+<div id="aba-pedidos" class="aba">
+  <div id="lista-pedidos">
+    <div class="vazio"><span>📋</span>Nenhum pedido ainda.<br>Filtre figurinhas e salve um pedido.</div>
+  </div>
+</div>
+
+<script>
+// ── JSONBin ───────────────────────────────────────────────────────────
+const BIN_ID = '6a3edee3da38895dfe0485b9';
+const API_KEY = '$2a$10$BrOXbFU50a6WqMfNYYRXmeJ1AE2Qe1WUHl.WpZCwPLpBINjCu.TIC';
+const BIN_URL = `https://api.jsonbin.io/v3/b/${BIN_ID}`;
+const DB_HEADERS = { 'Content-Type': 'application/json', 'X-Access-Key': API_KEY };
+
+// ── Estado ────────────────────────────────────────────────────────────
+let estado = { estoque: {}, pedidos: [] };
+let contadorPedido = 1;
+let salvando = false;
+
+function mostrarSync(msg, cor) {
+  let el = document.getElementById('sync-status');
+  if (!el) return;
+  el.textContent = msg;
+  el.style.background = cor || '#1f2d45';
+  el.style.display = 'block';
+  if (cor === 'ok') setTimeout(() => el.style.display = 'none', 2000);
+}
+
+async function carregar() {
+  mostrarSync('🔄 Sincronizando...');
+  try {
+    const r = await fetch(BIN_URL + '/latest', { headers: DB_HEADERS });
+    const data = await r.json();
+    estado = data.record || { estoque: {}, pedidos: [] };
+    if (!Array.isArray(estado.pedidos)) estado.pedidos = [];
+    if (estado.pedidos.length > 0) {
+      const nums = estado.pedidos.map(p => parseInt((p.num||'#0').replace('#',''))).filter(n=>!isNaN(n));
+      if (nums.length) contadorPedido = Math.max(...nums) + 1;
+    }
+    mostrarSync('✅ Sincronizado', 'ok');
+  } catch(e) {
+    mostrarSync('⚠️ Sem conexão — dados locais');
+    const s = localStorage.getItem('copa2026v2');
+    if (s) estado = JSON.parse(s);
+  }
+  renderBadge();
+  renderEstoquePreview();
+  renderPedidos();
+  // Atualiza a cada 15 segundos
+  setInterval(async () => {
+    if (salvando) return;
+    try {
+      const r = await fetch(BIN_URL + '/latest', { headers: DB_HEADERS });
+      const data = await r.json();
+      const novo = data.record || {};
+      if (JSON.stringify(novo.pedidos) !== JSON.stringify(estado.pedidos)) {
+        estado.pedidos = novo.pedidos || [];
+        renderPedidos();
+      }
+    } catch(e) {}
+  }, 15000);
+}
+
+async function salvar() {
+  salvando = true;
+  localStorage.setItem('copa2026v2', JSON.stringify(estado));
+  mostrarSync('💾 Salvando...');
+  try {
+    await fetch(BIN_URL, {
+      method: 'PUT',
+      headers: DB_HEADERS,
+      body: JSON.stringify(estado)
+    });
+    mostrarSync('✅ Salvo', 'ok');
+  } catch(e) {
+    mostrarSync('⚠️ Erro ao salvar online');
+  }
+  salvando = false;
+}
+
+// ── Parser universal (dois formatos) ─────────────────────────────────
+// Formato 1 (seu estoque):  "🇧🇷 Bra = 1,2,3(2x),5"
+// Formato 2 (app cliente):  "BRA 🇧🇷: 4, 7, 13"  ou  "FWC 🏆: 4"
+
+function removeEmojis(str) {
+  // Remove emojis de bandeira (regional indicator pairs), flags especiais, troféus, globos etc.
+  return str
+    .replace(/[\u{1F1E0}-\u{1F1FF}]{2}/gu, '')   // bandeiras (pares de regional indicators)
+    .replace(/[\u{1F3F4}\u{1F3C1}\u{1F3C6}\u{1F30E}\u{1F4DC}]/gu, '') // flags especiais, troféu, globo, pergaminho
+    .replace(/\uFE0F/g, '')  // variation selector
+    .replace(/[\u{E0067}\u{E0062}\u{E0065}\u{E006E}\u{E0073}\u{E007F}]/gu, '') // tag chars (🏴󠁧󠁢󠁥󠁮󠁧󠁿)
+    .trim();
+}
+
+function parseLinhaFormato1(linha) {
+  // "🇧🇷 Bra = 1,2,3(2x),5"
+  const semEmoji = removeEmojis(linha);
+  const idx = semEmoji.indexOf('=');
+  if (idx === -1) return null;
+
+  const pais = semEmoji.slice(0, idx).trim().toUpperCase().replace(/\s+/g,'');
+  const numStr = semEmoji.slice(idx + 1).trim();
+  if (!pais || !numStr) return null;
+
+  const nums = {};
+  for (let p of numStr.split(',')) {
+    p = p.trim();
+    const matchRep = p.match(/^(\d+)\((\d+)x\)$/i);
+    const matchSimp = p.match(/^(\d+)$/);
+    if (matchRep) nums[matchRep[1]] = parseInt(matchRep[2]);
+    else if (matchSimp) nums[matchSimp[1]] = 1;
+  }
+  return Object.keys(nums).length ? { pais, nums } : null;
+}
+
+function parseLinhaFormato2(linha) {
+  // "BRA 🇧🇷: 4, 7, 13"  ou  "FWC 🏆: 4"
+  const semEmoji = removeEmojis(linha);
+  const idx = semEmoji.indexOf(':');
+  if (idx === -1) return null;
+
+  const pais = semEmoji.slice(0, idx).trim().toUpperCase().replace(/\s+/g,'');
+  const numStr = semEmoji.slice(idx + 1).trim();
+  if (!pais || !numStr) return null;
+
+  const nums = {};
+  for (let p of numStr.split(',')) {
+    p = p.trim();
+    if (/^\d+$/.test(p)) nums[p] = 1;
+  }
+  return Object.keys(nums).length ? { pais, nums } : null;
+}
+
+// Formato 3 (Álbum de Figurinhas 2026): figurinhas inline tipo "CZE3, CZE16, BRA3"
+// Os códigos já têm o país embutido: [LETRAS][NÚMERO]
+function parseFormato3(texto) {
+  const resultado = {};
+  // Extrai todos os tokens do tipo LETRAS+NÚMERO (ex: CZE3, BRA17, CC1, FWC5)
+  const matches = texto.matchAll(/\b([A-Z]{2,4})(\d+)\b/g);
+  for (const m of matches) {
+    const pais = m[1];
+    const num = m[2];
+    // Ignora tokens que parecem URLs ou versões (ex: V2, ID6)
+    if (['PG','ID','V'].includes(pais)) continue;
+    if (!resultado[pais]) resultado[pais] = {};
+    resultado[pais][num] = 1;
+  }
+  return resultado;
+}
+
+function isFormato3(texto) {
+  // Formato 3 tem linhas com padrão PAÍS+NÚMERO sem "=" ou ":" entre eles
+  // Ex: "CZE3, CZE16, CZE20" ou "CC1, CC2, CC3"
+  return /\b[A-Z]{2,4}\d+\b/.test(texto) && !/[:=]/.test(texto.split('\n').find(l => /\b[A-Z]{2,4}\d+\b/.test(l)) || '');
+}
+
+function parseListaCompleta(texto) {
+  const resultado = {};
+
+  // Linhas de figurinhas inline (Formato 3): linhas que contêm PAÍS+NÚMERO sem "=" ou ":"
+  // Ex: "CZE3, CZE16, CZE20"
+  const linhasInline = texto.split('\n').filter(l => {
+    const t = l.trim();
+    return /\b[A-Z]{2,4}\d+\b/.test(t) && !/:/.test(t) && !t.includes('=');
+  });
+
+  if (linhasInline.length > 0) {
+    const f3 = parseFormato3(linhasInline.join(' '));
+    for (const [pais, nums] of Object.entries(f3)) {
+      if (!resultado[pais]) resultado[pais] = {};
+      Object.assign(resultado[pais], nums);
+    }
+  }
+
+  // Linhas com "=" ou ":" (Formato 1 e 2)
+  const linhasComSep = texto.split('\n').filter(l => {
+    const t = l.trim();
+    if (!t) return false;
+    if (/^https?:\/\//i.test(t)) return false;
+    if (/faltantes|baixe|figurinhas app|copa 2026|vamos trocar|gerado por|android|ios/i.test(t)) return false;
+    if (!/[:=]/.test(t)) return false;
+    return true;
+  });
+
+  for (const linha of linhasComSep) {
+    const parsed = linha.includes('=')
+      ? parseLinhaFormato1(linha)
+      : parseLinhaFormato2(linha);
+    if (parsed && Object.keys(parsed.nums).length > 0) {
+      if (resultado[parsed.pais]) {
+        Object.assign(resultado[parsed.pais], parsed.nums);
+      } else {
+        resultado[parsed.pais] = parsed.nums;
+      }
+    }
+  }
+
+  return resultado;
+}
+
+// ── Estoque ───────────────────────────────────────────────────────────
+function processarEstoque() {
+  const txt = document.getElementById('input-estoque').value;
+  const novo = parseListaCompleta(txt);
+  if (Object.keys(novo).length === 0) {
+    alert('Não consegui ler nenhuma figurinha. Verifique o formato:\n🇧🇷 Bra = 1,2,3(2x)');
+    return;
+  }
+  estado.estoque = novo;
+  salvar();
+  renderBadge();
+  renderEstoquePreview();
+  alert(`✅ Estoque salvo! ${totalFigs(estado.estoque)} figurinhas de ${Object.keys(estado.estoque).length} países.`);
+}
+
+function totalFigs(estoque) {
+  let t = 0;
+  for (const pais of Object.values(estoque))
+    for (const q of Object.values(pais)) t += q;
+  return t;
+}
+
+function renderBadge() {
+  const total = totalFigs(estado.estoque);
+  const paises = Object.keys(estado.estoque).length;
+  document.getElementById('badge-total').textContent =
+    `Estoque: ${total} figurinhas · ${paises} países`;
+}
+
+function renderEstoquePreview() {
+  const div = document.getElementById('estoque-preview');
+  const paises = Object.keys(estado.estoque);
+  if (paises.length === 0) { div.innerHTML = ''; return; }
+
+  div.innerHTML = `
+    <div style="margin-top:18px;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+        <div>
+          <div class="count-num">${totalFigs(estado.estoque)}</div>
+          <div class="count-label">figurinhas em ${paises.length} países</div>
+        </div>
+        <button class="copiar-btn" onclick="copiarEstoque()">Copiar lista</button>
+      </div>
+      ${paises.sort().map(p => {
+        const figs = estado.estoque[p];
+        const tags = Object.entries(figs).sort((a,b)=>parseInt(a)-parseInt(b)).map(([n,q]) =>
+          `<span class="figurinha-tag ${q>1?'repetida':''}">${p}-${n}${q>1?` <b>(${q}x)</b>`:''}</span>`
+        ).join('');
+        return `<div class="estoque-pais">
+          <div class="estoque-pais-header">
+            <span class="estoque-pais-nome">${p}</span>
+            <span class="estoque-pais-count">${Object.keys(figs).length} figurinhas</span>
+          </div>
+          <div>${tags}</div>
+        </div>`;
+      }).join('')}
+    </div>
+  `;
+}
+
+function limparEstoque() {
+  if (!confirm('Apagar todo o estoque?')) return;
+  estado.estoque = {};
+  document.getElementById('input-estoque').value = '';
+  salvar();
+  renderBadge();
+  renderEstoquePreview();
+}
+
+function copiarEstoque() {
+  const linhas = Object.entries(estado.estoque).sort().map(([pais, figs]) => {
+    const nums = Object.entries(figs).sort((a,b)=>parseInt(a)-parseInt(b))
+      .map(([n,q]) => q > 1 ? `${n}(${q}x)` : n).join(',');
+    return `${pais} = ${nums}`;
+  });
+  navigator.clipboard.writeText(linhas.join('\n'));
+  alert('Lista copiada!');
+}
+
+// ── Preços ────────────────────────────────────────────────────────────
+const PRECO_BRILHANTE = 3.00;
+const PRECO_NORMAL = 1.50;
+function isBrilhante(num) { return num === '1'; }
+function precoFig(num) { return isBrilhante(num) ? PRECO_BRILHANTE : PRECO_NORMAL; }
+function calcularTotal(matches) {
+  let normais = 0, brilhantes = 0;
+  for (const nums of Object.values(matches))
+    for (const n of nums)
+      isBrilhante(n) ? brilhantes++ : normais++;
+  const total = normais * PRECO_NORMAL + brilhantes * PRECO_BRILHANTE;
+  return { normais, brilhantes, total };
+}
+function formatBRL(v) { return 'R$ ' + v.toFixed(2).replace('.',','); }
+
+// ── Filtrar ───────────────────────────────────────────────────────────
+function filtrar() {
+  const txt = document.getElementById('input-cliente').value;
+  const nome = document.getElementById('nome-cliente').value.trim() || 'Cliente';
+  const div = document.getElementById('resultado-filtro');
+
+  if (Object.keys(estado.estoque).length === 0) {
+    div.innerHTML = `<div class="alerta alerta-erro">⚠️ Cadastre seu estoque primeiro (aba Estoque).</div>`;
+    return;
+  }
+  if (!txt.trim()) {
+    div.innerHTML = `<div class="alerta alerta-erro">⚠️ Cole a lista do cliente antes de filtrar.</div>`;
+    return;
+  }
+
+  const pedidas = parseListaCompleta(txt);
+  if (Object.keys(pedidas).length === 0) {
+    div.innerHTML = `<div class="alerta alerta-erro">⚠️ Não consegui ler a lista do cliente. Verifique o formato.</div>`;
+    return;
+  }
+
+  // Encontrar matches
+  const matches = {}; // { pais: [num, num, ...] }
+  const faltam = {};
+
+  for (const [pais, nums] of Object.entries(pedidas)) {
+    for (const num of Object.keys(nums)) {
+      const tenho = estado.estoque[pais] && estado.estoque[pais][num];
+      if (tenho) {
+        if (!matches[pais]) matches[pais] = [];
+        matches[pais].push(num);
+      } else {
+        if (!faltam[pais]) faltam[pais] = [];
+        faltam[pais].push(num);
+      }
+    }
+  }
+
+  const totalMatch = Object.values(matches).reduce((s,a)=>s+a.length,0);
+  const totalPediu = Object.values(pedidas).reduce((s,a)=>s+Object.keys(a).length,0);
+
+  if (totalMatch === 0) {
+    div.innerHTML = `<div class="alerta alerta-erro">😕 Nenhuma das ${totalPediu} figurinhas que ${nome} precisa está no seu estoque.</div>`;
+    return;
+  }
+
+  // Preços
+  const preco = calcularTotal(matches);
+  const matchSerial = JSON.stringify(matches).replace(/"/g,'&quot;');
+
+  div.innerHTML = `
+    <div class="resultado-box">
+      <div class="count-bar">
+        <div>
+          <div class="count-num">${totalMatch}</div>
+          <div class="count-label">você tem das ${totalPediu} que ${nome} precisa</div>
+        </div>
+      </div>
+
+      ${Object.entries(matches).sort().map(([pais, nums]) => `
+        <div class="pais-bloco">
+          <div class="pais-titulo">${pais}</div>
+          ${nums.sort((a,b)=>parseInt(a)-parseInt(b)).map(n =>
+            `<span class="figurinha-tag match ${isBrilhante(n)?'brilhante':''}">${pais}-${n}${isBrilhante(n)?' ✨':''}</span>`
+          ).join('')}
+        </div>
+      `).join('')}
+
+      <div class="separador"></div>
+      <div class="resumo-preco">
+        ${preco.normais > 0 ? `<div class="preco-linha"><span>${preco.normais}x normais</span><span>${formatBRL(preco.normais * PRECO_NORMAL)}</span></div>` : ''}
+        ${preco.brilhantes > 0 ? `<div class="preco-linha"><span>${preco.brilhantes}x brilhantes ✨</span><span>${formatBRL(preco.brilhantes * PRECO_BRILHANTE)}</span></div>` : ''}
+        <div class="preco-total"><span>Total</span><span>${formatBRL(preco.total)}</span></div>
+      </div>
+
+      ${Object.keys(faltam).length > 0 ? `
+        <div class="separador"></div>
+        <h3>Você não tem (${Object.values(faltam).reduce((s,a)=>s+a.length,0)})</h3>
+        ${Object.entries(faltam).sort().map(([pais, nums]) => `
+          <div class="pais-bloco">
+            <div class="pais-titulo" style="color:#6b7a99">${pais}</div>
+            ${nums.sort((a,b)=>parseInt(a)-parseInt(b)).map(n =>
+              `<span class="figurinha-tag">${pais}-${n}</span>`
+            ).join('')}
+          </div>
+        `).join('')}
+      ` : ''}
+
+      <button class="btn btn-verde" onclick="salvarPedido('${nome.replace(/'/g,"\\'")}', ${matchSerial})">
+        💾 Salvar pedido · ${formatBRL(preco.total)}
+      </button>
+    </div>
+  `;
+}
+
+// ── Pedidos ───────────────────────────────────────────────────────────
+// Status: aguardando → reservado → entregue | cancelado
+
+function salvarPedido(nome, matches) {
+  const num = `#${String(contadorPedido++).padStart(3,'0')}`;
+  const total = Object.values(matches).reduce((s,a)=>s+a.length,0);
+  const preco = calcularTotal(matches);
+  estado.pedidos.unshift({
+    id: Date.now(), num, nome, matches, total, preco,
+    status: 'aguardando',
+    data: new Date().toLocaleDateString('pt-BR')
+  });
+  salvar();
+  renderPedidos();
+  irAba('pedidos');
+  alert(`Pedido ${num} salvo!\nTotal: ${formatBRL(preco.total)}`);
+}
+
+function reservarPedido(id) {
+  const p = estado.pedidos.find(x => x.id === id);
+  if (!p) return;
+  p.status = 'reservado';
+  salvar();
+  renderPedidos();
+}
+
+function confirmarPedido(id) {
+  const p = estado.pedidos.find(x => x.id === id);
+  if (!p) return;
+  if (!confirm(`Confirmar entrega do pedido ${p.num}?\n${p.total} figurinhas serão removidas do estoque.`)) return;
+
+  for (const [pais, nums] of Object.entries(p.matches)) {
+    if (!estado.estoque[pais]) continue;
+    for (const num of nums) {
+      if (!estado.estoque[pais][num]) continue;
+      estado.estoque[pais][num]--;
+      if (estado.estoque[pais][num] <= 0) delete estado.estoque[pais][num];
+    }
+    if (Object.keys(estado.estoque[pais]).length === 0) delete estado.estoque[pais];
+  }
+
+  p.status = 'entregue';
+  salvar();
+  renderBadge();
+  renderEstoquePreview();
+  renderPedidos();
+  alert(`✅ Pedido ${p.num} entregue! Estoque atualizado.`);
+}
+
+function cancelarPedido(id) {
+  const p = estado.pedidos.find(x => x.id === id);
+  if (!p) return;
+  if (!confirm(`Cancelar pedido ${p.num}? As figurinhas voltam ao estoque normalmente.`)) return;
+  p.status = 'cancelado';
+  salvar();
+  renderPedidos();
+  alert(`❌ Pedido ${p.num} cancelado. Figurinhas devolvidas ao estoque.`);
+}
+
+const statusLabel = {
+  aguardando: '💬 Aguardando',
+  reservado:  '🔵 Reservado',
+  entregue:   '✅ Entregue',
+  cancelado:  '❌ Cancelado'
+};
+
+function renderPedidos() {
+  const div = document.getElementById('lista-pedidos');
+  const ativos = estado.pedidos.filter(p => p.status !== 'entregue' && p.status !== 'cancelado');
+  const finalizados = estado.pedidos.filter(p => p.status === 'entregue' || p.status === 'cancelado');
+
+  if (estado.pedidos.length === 0) {
+    div.innerHTML = `<div class="vazio"><span>📋</span>Nenhum pedido ainda.<br>Quando um cliente entrar em contato, salve o pedido aqui.</div>`;
+    return;
+  }
+
+  const renderCard = p => {
+    const pr = p.preco || calcularTotal(p.matches);
+    return `
+    <div class="pedido-card">
+      <div class="pedido-header">
+        <span class="pedido-num">${p.num} — ${p.nome}</span>
+        <span class="status-badge status-${p.status}">${statusLabel[p.status]||p.status}</span>
+      </div>
+      <div style="font-size:0.72rem;color:var(--muted);margin-bottom:8px;">${p.data} · ${p.total} figurinhas</div>
+      ${Object.entries(p.matches).sort().map(([pais, nums]) => `
+        <div style="margin-bottom:5px;">
+          <span style="font-size:0.72rem;color:var(--muted);font-weight:600;">${pais}: </span>
+          ${nums.map(n => `<span class="figurinha-tag match" style="font-size:0.72rem;">${pais}-${n}${isBrilhante(n)?' ✨':''}</span>`).join('')}
+        </div>
+      `).join('')}
+      <div class="resumo-preco" style="margin-top:10px;">
+        ${pr.normais > 0 ? `<div class="preco-linha"><span>${pr.normais}x normais</span><span>${formatBRL(pr.normais*PRECO_NORMAL)}</span></div>` : ''}
+        ${pr.brilhantes > 0 ? `<div class="preco-linha"><span>${pr.brilhantes}x brilhantes ✨</span><span>${formatBRL(pr.brilhantes*PRECO_BRILHANTE)}</span></div>` : ''}
+        <div class="preco-total"><span>Total</span><span>${formatBRL(pr.total)}</span></div>
+      </div>
+      ${p.status === 'aguardando' ? `
+        <div class="pedido-actions" style="flex-direction:column;gap:6px;">
+          <button class="btn-confirmar" style="background:#1d4ed8;" onclick="reservarPedido(${p.id})">🔵 Cliente confirmou — Reservar</button>
+          <button class="btn-cancelar" onclick="cancelarPedido(${p.id})">❌ Cliente desistiu — Cancelar</button>
+        </div>
+      ` : p.status === 'reservado' ? `
+        <div class="pedido-actions" style="flex-direction:column;gap:6px;">
+          <button class="btn-confirmar" onclick="confirmarPedido(${p.id})">✅ Entreguei — Dar baixa no estoque</button>
+          <button class="btn-cancelar" onclick="cancelarPedido(${p.id})">❌ Desistiu — Cancelar e devolver</button>
+        </div>
+      ` : ''}
+    </div>`;
+  };
+
+  div.innerHTML = ativos.map(renderCard).join('') +
+    (finalizados.length > 0 ? `
+      <div class="separador"></div>
+      <div style="font-size:0.72rem;color:var(--muted);font-weight:600;letter-spacing:1px;text-transform:uppercase;margin-bottom:10px;">Finalizados</div>
+      ${finalizados.map(renderCard).join('')}
+    ` : '');
+}
+
+// ── Nav ───────────────────────────────────────────────────────────────
+function irAba(nome) {
+  document.querySelectorAll('.aba').forEach(a => a.classList.remove('ativa'));
+  document.querySelectorAll('nav button').forEach(b => b.classList.remove('ativa'));
+  document.getElementById('aba-' + nome).classList.add('ativa');
+  ['estoque','filtrar','pedidos'].forEach((a,i) => {
+    if (a === nome) document.querySelectorAll('nav button')[i].classList.add('ativa');
+  });
+}
+
+carregar();
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('/figurinhas-copa/sw.js');
+}
+</script>
+</body>
+</html>
