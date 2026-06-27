@@ -158,25 +158,177 @@ function parseLinhaF2(linha) {
   return Object.keys(nums).length ? { pais, nums } : null;
 }
 
+// ── Dicionário de nomes → código ─────────────────────────────────────
+const NOMES_PAISES = {
+  // Argélia
+  'ALG':'ALG','ALGERIA':'ALG','ARGELIA':'ALG','ALEGRIA':'ALG','ALGE':'ALG',
+  // Argentina
+  'ARG':'ARG','ARGENTINA':'ARG','ARGENT':'ARG',
+  // Austrália
+  'AUS':'AUS','AUSTRALIA':'ALG','AUST':'AUS','AUSTRALI':'AUS',
+  // Áustria
+  'AUT':'AUT','AUSTRIA':'AUT','AUST':'AUT',
+  // Bélgica
+  'BEL':'BEL','BELGICA':'BEL','BELGIUM':'BEL','BELG':'BEL',
+  // Bósnia
+  'BIH':'BIH','BOSNIA':'BIH','BOSNI':'BIH',
+  // Brasil
+  'BRA':'BRA','BRASIL':'BRA','BRAZIL':'BRA',
+  // Canadá
+  'CAN':'CAN','CANADA':'CAN','CANAD':'CAN',
+  // Costa do Marfim
+  'CIV':'CIV','COSTADOMARFIM':'CIV','MARFIM':'CIV','IVORY':'CIV',
+  // Congo
+  'COD':'COD','CONGO':'COD',
+  // Colômbia
+  'COL':'COL','COLOMBIA':'COL','COLOMB':'COL',
+  // Cabo Verde
+  'CPV':'CPV','CABOVERDE':'CPV','CABO':'CPV','CINCO':'CPV','CPV':'CPV',
+  // Croácia
+  'CRO':'CRO','CROACIA':'CRO','CROATIA':'CRO','CROAT':'CRO',
+  // Curaçao
+  'CUW':'CUW','CURACAO':'CUW','CURA':'CUW',
+  // República Checa
+  'CZE':'CZE','CHECA':'CZE','TCHECA':'CZE','CZECH':'CZE','CZE':'CZE','CZ':'CZE',
+  // Equador
+  'ECU':'ECU','EQUADOR':'ECU','ECUADOR':'ECU','EQUA':'ECU','EQUAD':'ECU',
+  // Egito
+  'EGY':'EGY','EGITO':'EGY','EGYPT':'EGY','EGI':'EGY',
+  // Inglaterra
+  'ENG':'ENG','INGLATERRA':'ENG','ENGLAND':'ENG','INGL':'ENG',
+  // Espanha
+  'ESP':'ESP','ESPANHA':'ESP','SPAIN':'ESP','ESPA':'ESP',
+  // França
+  'FRA':'FRA','FRANCA':'FRA','FRANCE':'FRA','FRANC':'FRA',
+  // Alemanha
+  'GER':'GER','ALEMANHA':'GER','GERMANY':'GER','ALEM':'GER','GER':'GER',
+  // Gana
+  'GHA':'GHA','GANA':'GHA','GHANA':'GHA',
+  // Haiti
+  'HAI':'HAI','HAITI':'HAI','HAIT':'HAI','HAIT':'HAI',
+  // Irã
+  'IRN':'IRN','IRA':'IRN','IRAN':'IRN',
+  // Iraque
+  'IRQ':'IRQ','IRAQUE':'IRQ','IRAQ':'IRQ',
+  // Jordânia
+  'JOR':'JOR','JORDANIA':'JOR','JORDAN':'JOR','JOR':'JOR',
+  // Japão
+  'JPN':'JPN','JAPAO':'JPN','JAPAN':'JPN','JAP':'JPN',
+  // Coreia
+  'KOR':'KOR','COREIA':'KOR','KOREA':'KOR','COR':'KOR',
+  // Arábia Saudita
+  'KSA':'KSA','ARABIA':'KSA','SAUDITA':'KSA','SAUDI':'KSA','ARAB':'KSA',
+  // Marrocos
+  'MAR':'MAR','MARROCOS':'MAR','MOROCCO':'MAR','MARR':'MAR',
+  // México
+  'MEX':'MEX','MEXICO':'MEX','MEXIC':'MEX',
+  // Holanda
+  'NED':'NED','HOLANDA':'NED','NETHERLANDS':'NED','HOL':'NED','NEDER':'NED',
+  // Nova Zelândia
+  'NZL':'NZL','NOVAZELANDA':'NZL','NEWZEALAND':'NZL','NZEA':'NZL',
+  // Noruega
+  'NOR':'NOR','NORUEGA':'NOR','NORWAY':'NOR','NORU':'NOR',
+  // Panamá
+  'PAN':'PAN','PANAMA':'PAN','PANA':'PAN',
+  // Paraguai
+  'PAR':'PAR','PARAGUAI':'PAR','PARAGUAY':'PAR','PARAG':'PAR',
+  // Portugal
+  'POR':'POR','PORTUGAL':'POR','PORT':'POR',
+  // Catar
+  'QAT':'QAT','CATAR':'QAT','QATAR':'QAT','CAT':'QAT',
+  // África do Sul
+  'RSA':'RSA','AFRICADOSUL':'RSA','SOUTHAFRICA':'RSA','AFRICA':'RSA',
+  // Escócia
+  'SCO':'SCO','ESCOCIA':'SCO','SCOTLAND':'SCO','ESCO':'SCO',
+  // Senegal
+  'SEN':'SEN','SENEGAL':'SEN','SENE':'SEN',
+  // Suíça
+  'SUI':'SUI','SUICA':'SUI','SWITZERLAND':'SUI','SUI':'SUI',
+  // Suécia
+  'SWE':'SWE','SUECIA':'SWE','SWEDEN':'SWE','SUE':'SWE',
+  // Tunísia
+  'TUN':'TUN','TUNISIA':'TUN','TUNIS':'TUN','TUN':'TUN',
+  // Turquia
+  'TUR':'TUR','TURQUIA':'TUR','TURKEY':'TUR','TURQ':'TUR',
+  // Uruguai
+  'URU':'URU','URUGUAI':'URU','URUGUAY':'URU','URUG':'URU',
+  // EUA
+  'USA':'USA','EUA':'USA','ESTADOSUNIDOS':'USA','UNITED':'USA',
+  // Uzbequistão
+  'UZB':'UZB','UZBEQUISTAO':'UZB','UZBEKISTAN':'UZB','UZB':'UZB',
+  // Coca-Cola / FWC
+  'CC':'CC','COCA':'CC','COCACOLA':'CC','COCAL':'CC',
+  'FWC':'FWC','TROFEU':'FWC','COPA':'FWC',
+};
+
+function normalizarPais(raw) {
+  // Remove espaços, pontos, acentos e coloca maiúsculo
+  const limpo = raw.trim()
+    .toUpperCase()
+    .normalize('NFD').replace(/[\u0300-\u036f]/g, '') // remove acentos
+    .replace(/[^A-Z]/g, ''); // só letras
+  return NOMES_PAISES[limpo] || limpo;
+}
+
+// ── Parser formato livre (ex: "Paraguai. 1,4" ou "CZE. 12,16") ────────
+function parseFormatoLivre(texto) {
+  const resultado = {};
+  const linhas = texto.split('\n');
+  for (const linha of linhas) {
+    const t = linha.trim();
+    if (!t) continue;
+    // Tenta separar país de números por ".", ":", "=" ou espaço
+    const m = t.match(/^([A-Za-zÀ-ú\s]{2,20})[\.:\=\s]+(.+)$/);
+    if (!m) continue;
+    const paisRaw = m[1].trim();
+    const numStr = m[2].trim();
+    // Extrai números
+    const nums = {};
+    for (const n of numStr.match(/\d+/g) || []) {
+      nums[n] = 1;
+    }
+    if (Object.keys(nums).length === 0) continue;
+    const pais = normalizarPais(paisRaw);
+    if (!pais || pais.length < 2) continue;
+    if (!resultado[pais]) resultado[pais] = {};
+    Object.assign(resultado[pais], nums);
+  }
+  return resultado;
+}
+
 function parseLista(texto) {
   const resultado = {};
+
+  // Formato livre: "Paraguai. 1,4" / "CZE. 12,16" / "Alegria.6"
+  const livre = parseFormatoLivre(texto);
+  for (const [pais, nums] of Object.entries(livre)) {
+    if (!resultado[pais]) resultado[pais] = {};
+    Object.assign(resultado[pais], nums);
+  }
+
+  // Formato inline: CZE3, BRA17
   const linhasInline = texto.split('\n').filter(l => /\b[A-Z]{2,4}\d+\b/.test(l.trim()) && !/:/.test(l) && !l.includes('='));
   if (linhasInline.length > 0) {
     for (const m of linhasInline.join(' ').matchAll(/\b([A-Z]{2,4})(\d+)\b/g)) {
       if (['PG','ID','V'].includes(m[1])) continue;
-      if (!resultado[m[1]]) resultado[m[1]] = {};
-      resultado[m[1]][m[2]] = 1;
+      const pais = normalizarPais(m[1]);
+      if (!resultado[pais]) resultado[pais] = {};
+      resultado[pais][m[2]] = 1;
     }
   }
+
+  // Formato com "=" ou ":"
   for (const linha of texto.split('\n')) {
     const t = linha.trim();
     if (!t || /^https?:\/\//i.test(t) || /faltantes|baixe|copa 2026|vamos trocar|gerado|android|ios|chave/i.test(t) || !/[:=]/.test(t)) continue;
     const p = linha.includes('=') ? parseLinhaF1(linha) : parseLinhaF2(linha);
     if (p) {
-      if (resultado[p.pais]) Object.assign(resultado[p.pais], p.nums);
-      else resultado[p.pais] = p.nums;
+      const pais = normalizarPais(p.pais);
+      if (resultado[pais]) Object.assign(resultado[pais], p.nums);
+      else resultado[pais] = p.nums;
     }
   }
+
   return resultado;
 }
 
@@ -314,3 +466,4 @@ async function verificar() {
 </script>
 </body>
 </html>
+
